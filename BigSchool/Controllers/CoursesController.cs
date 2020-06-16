@@ -35,7 +35,7 @@ namespace BigSchool.Controllers
                 viewModel.Categories = _dbContext.Categories.ToList();
                 return View("Create", viewModel);
             }
-            var couese = new Course
+            var course = new Course
             {
                 LecturerId = User.Identity.GetUserId(),
                 DateTime = viewModel.GetDateTime(),
@@ -43,7 +43,7 @@ namespace BigSchool.Controllers
                 Place = viewModel.Place
 
             };
-            _dbContext.Courses.Add(couese);
+            _dbContext.Courses.Add(course);
             _dbContext.SaveChanges();
             return RedirectToAction("Index", "Home");
         }

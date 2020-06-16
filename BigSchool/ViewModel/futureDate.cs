@@ -12,7 +12,7 @@ namespace BigSchool.ViewModel
         public override bool IsValid (object value)
         {
             DateTime datetime;
-            var isValid = DateTime.TryParseExact(Convert.ToString(value), "dd/M/yyyy",
+            var isValid = DateTime.TryParseExact(Convert.ToString(value), "MM/dd/yyyy",
                 CultureInfo.CurrentCulture,
                 DateTimeStyles.None,
                 out datetime);
