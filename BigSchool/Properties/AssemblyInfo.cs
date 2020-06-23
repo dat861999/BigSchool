@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("BigSchool")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("www.blogthuthuatwin10.com")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BigSchool")]
-[assembly: AssemblyCopyright("Copyright © www.blogthuthuatwin10.com 2020")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("721f8108-58d9-41b3-a1e1-0b9afc24938f")]
+[assembly: Guid("9061cbb7-44ad-4572-a6fa-a1ba68ec52a3")]
 
 // Version information for an assembly consists of the following four values:
 //

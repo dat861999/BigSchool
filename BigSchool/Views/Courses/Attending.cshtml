@@ -1,41 +1,153 @@
-﻿
-@model BigSchool.ViewModels.CoursesViewModel
-@{
-    ViewBag.Title = "Attending";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<h2>Attending</h2>
+﻿@model BigSchool.ViewModels.CoursesViewModel
+@using Microsoft.AspNet.Identity
 
-<ul class="course">
-    @foreach(var course in Model.UpcommingCourses)
+@{
+    ViewBag.Title = "Home Page";
+    var attendings = (List<BigSchool.Models.Attendance>)ViewBag.Attendings;
+    var followings = (List<BigSchool.Models.Following>)ViewBag.Followings;
+}
+
+<h1>Attending</h1>
+
+<div class="row">
+
+    <ul class="course">
+        @foreach (var course in Model.UpcomingCourses)
+        {
+            <li>
+                <div class="date">
+                    <div class="month">
+                        @course.DateTime.ToString("MM")
+                    </div>
+                    <div class="day">
+                        @course.DateTime.ToString("dd")
+                    </div>
+                </div>
+
+                <div class="details">
+                    <span class="lecturer">
+                        @course.Lecturer.Name
+                        @if (Model.ShowAction)
+                        {
+                            int check = 0;
+                            foreach (var item in followings)
+                            {
+                                if (course.LecturerId == item.FolloweeId && User.Identity.GetUserId() == item.FollowerId)
+                                {
+                                    <button data-user-id="@course.LecturerId" class="btn btn-info btn-sm js-toggle-follow following">Following</button>
+                                    check = 1;
+                                    break;
+                                }
+                            }
+                            if (check == 0)
+                            {
+                                <button data-user-id="@course.LecturerId" class="btn btn-default btn-sm js-toggle-follow">Follow</button>
+                            }
+
+                        }
+                    </span>
+                    -
+                    <span class="category">
+                        @course.Category.Name
+                        @if (Model.ShowAction)
+                        {
+                            int check = 0;
+                            foreach (var item in attendings)
+                            {
+                                if (course.Id == item.CourseId && User.Identity.GetUserId() == item.AttendeeId)
+                                {
+                                    <button data-course-id="@course.Id" class="btn btn-info btn-sm js-toggle-attendance going">Going</button>
+                                    check = 1;
+                                    break;
+                                }
+                            }
+                            if (check == 0)
+                            {
+                                <button data-course-id="@course.Id" class="btn btn-default btn-sm js-toggle-attendance">Going?</button>
+                            }
+                        }
+                    </span>
+
+                </div>
+            </li>
+        }
+    </ul>
+    @section scripts
     {
-        <li>
-            <div class="date">
-                <div class="month">
-                    @course.DateTime.ToString("MM")
-                </div>
-                <div class="day">
-                    @course.DateTime.ToString("dd")
-                </div>
-            </div>
-            <div class="details">
-                <span class="lecturer">
-                    @course.Lecturer.Name
-                    @if(Model.ShowAction)
-                    {
-                    <button class="btn btn-link btn-sm js-toggle-follow" data-user-id="@course.LecturerId">Follow</button>
+        <script>
+       
+            $(document).ready(function () {
+                $(".js-toggle-attendance").click(function (e) {
+                    var button = $(e.target);
+                    if (button.hasClass("going")) {
+                        bootbox.confirm("Are u sure to unattend this course?",
+                        function () {
+                            $.ajax({
+                                url: "/api/attending/" + button.attr("data-course-id"),
+                                method: "DELETE"
+                            })
+                                .done(function () {
+                                    button
+                                    .removeClass("btn-info going")
+                                    .addClass("btn-default")
+                                    .text("Going?");
+                                })
+                                .fail(function () {
+                                    alert("Sth failed.");
+                                });
+                        });
                     }
-                </span>
-                <span class="Category">
-                    @course.Category.Name
-                </span>
-                @if(Model.ShowAction)
-                {
-                <button data-course-id="@course.Id"class="btn btn-default brn-sm js-toggle-attendance">Going?</button>
-                }
-            </div>
-        </li>
+                    else {
+                         $.post("/api/attendances", { courseId: button.attr("data-course-id") })
+                        .done(function () {
+                            button
+                                .removeClass("btn-default")
+                                .addClass("btn-info going")
+                                .text("Going");
+                        })
+                        .fail(function () {
+                            alert("Sth failed!");
+                        });
+                    }
+                });
+                $(".js-toggle-follow").click(function (e) {
+                    var button = $(e.target);
+                    if (button.hasClass("following")) {
+                        bootbox.confirm("Are u sure to unfollow this lecturer?",
+                        function () {
+                            $.ajax({
+                                url: "/api/following/" + button.attr("data-user-id"),
+                                method: "DELETE"
+                            })
+                                .done(function () {
+                                    button
+                                    .removeClass("btn-info following")
+                                    .addClass("btn-default")
+                                    .text("Follow");
+                                })
+                                .fail(function () {
+                                    alert("Sth failed.");
+                                });
+                        });
+                    }
+                    else {
+                         $.post("/api/followings", { followeeId: button.attr("data-user-id") })
+                        .done(function () {
+                            button
+                                .removeClass("btn-default")
+                                .addClass("btn-info")
+                                .text("Following");
+                        })
+                        .fail(function () {
+                            alert("Sth failed!");
+                        });
+                    }
+                   
+                });
+            });
+        </script>
     }
-</ul>
+</div>
+
 
 
